@@ -24,7 +24,7 @@ app.use(compression());
 app.use(cors({
   origin: [
     'http://localhost:3000',
-    'https://ai-portfolio-main-1.vercel.app'
+    'https://naveenagarwal-portfolio.vercel.app'
   ],
   credentials: true
 }));
