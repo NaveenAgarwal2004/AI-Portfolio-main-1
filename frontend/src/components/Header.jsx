@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Download, Home, User, Briefcase, Mail, Code } from 'lucide-react';
+import { Download, Home, User, Briefcase, Mail, Code } from 'lucide-react';
+import AnimatedHamburgerIcon from './ui/AnimatedHamburgerIcon';
 import { Button } from './ui/button';
 import { mockData } from '../mock';
 
@@ -132,42 +133,48 @@ const Header = () => {
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="text-gray-300 hover:text-white p-2"
+              aria-label="Toggle menu"
+              aria-expanded={isOpen}
             >
-              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              <AnimatedHamburgerIcon isOpen={isOpen} />
             </button>
           </div>
         </div>
 
         {/* Mobile Navigation */}
-        {isOpen && (
-          <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 bg-gray-800/95 backdrop-blur-md rounded-lg mt-2">
-              {navItems.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => scrollToSection(item.id)}
-                    className="flex items-center gap-3 text-gray-300 hover:text-white px-3 py-2 rounded-md text-base font-medium w-full text-left transition-colors duration-200"
-                  >
-                    <Icon className="h-4 w-4" />
-                    {item.label}
-                  </button>
-                );
-              })}
-              <div className="pt-2 border-t border-gray-700">
-                <div className="relative inline-block text-left w-full">
-                  <button
-                    type="button"
-                    onClick={() => setIsResumeOpen(!isResumeOpen)}
-                    className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-blue-600 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                    id="mobile-menu-button"
-                    aria-expanded={isResumeOpen}
-                    aria-haspopup="true"
-                  >
-                    Download Resume
-                    <Download className="h-4 w-4 ml-2" />
-                  </button>
+        <div
+          className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+            isOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
+          }`}
+          aria-hidden={!isOpen}
+        >
+          <div className="px-2 pt-2 pb-20 space-y-1 bg-gray-800/95 backdrop-blur-md rounded-lg mt-2">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => scrollToSection(item.id)}
+                  className="flex items-center gap-3 text-gray-300 hover:text-white px-3 py-2 rounded-md text-base font-medium w-full text-left transition-colors duration-200"
+                >
+                  <Icon className="h-4 w-4" />
+                  {item.label}
+                </button>
+              );
+            })}
+            <div className="pt-2 border-t border-gray-700">
+              <div className="relative inline-block text-left w-full">
+                <button
+                  type="button"
+                  onClick={() => setIsResumeOpen(!isResumeOpen)}
+                  className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-blue-600 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  id="mobile-menu-button"
+                  aria-expanded={isResumeOpen}
+                  aria-haspopup="true"
+                >
+                  Download Resume
+                  <Download className="h-4 w-4 ml-2" />
+                </button>
 
                   {isResumeOpen && (
                     <div
@@ -199,7 +206,6 @@ const Header = () => {
               </div>
             </div>
           </div>
-        )}
       </div>
     </header>
   );

@@ -107,10 +107,10 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white overflow-x-hidden">
+    <div className="min-h-screen bg-gray-900 text-white overflow-x-hidden md:overflow-visible">
       <SEO {...seoData} />
       <Header />
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <main className="px-4 sm:px-6 lg:px-8 w-full max-w-full md:max-w-full mx-auto">
         <Hero personalData={portfolioData?.personal} />
         <About personalData={portfolioData?.personal} statsData={portfolioData?.stats} />
         <TechStack techStackData={portfolioData?.techStack} />
