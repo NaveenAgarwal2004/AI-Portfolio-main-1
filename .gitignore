@@ -40,6 +40,10 @@ backend/uploads/
 .env.production
 frontend/.env
 backend/.env
+# Environment variables
+.env
+.env.*
+backend/.env
 
 # ===================
 # Logs & Debugging
