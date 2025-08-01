@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ChevronDown, Github, Linkedin, Mail, ArrowRight } from 'lucide-react';
 import { Button } from './ui/button';
 import * as THREE from 'three';
-import NET from 'vanta/dist/vanta.net.min'; // ✅ Import VANTA.NET
 
 const Hero = ({ personalData }) => {
   const [displayText, setDisplayText] = useState('');
@@ -22,26 +21,31 @@ const Hero = ({ personalData }) => {
     return () => clearTimeout(timeout);
   }, [currentIndex, fullText]);
 
-  // Vanta.NET background
+  // VANTA.GLOBE effect with mobile optimization
   useEffect(() => {
-    if (vantaRef.current && !vantaEffect.current) {
-      vantaEffect.current = NET({
-        el: vantaRef.current,
-        THREE,
-        mouseControls: true,
-        touchControls: true,
-        gyroControls: false,
-        minHeight: 200.0,
-        minWidth: 200.0,
-        scale: 1.0,
-        scaleMobile: 1.0,
-        color: 0xcd1b58,
-        backgroundColor: 0x130b1b,
-        points: 12.0,
-        maxDistance: 20.0,
-        spacing: 22.0
-      });
-    }
+    const loadVanta = async () => {
+      const VANTA = await import('vanta/dist/vanta.globe.min');
+      if (vantaRef.current && !vantaEffect.current && window.innerWidth > 640) {
+        vantaEffect.current = VANTA.default({
+          el: vantaRef.current,
+          THREE,
+          mouseControls: true,
+          touchControls: true,
+          gyroControls: false,
+          minHeight: 200.0,
+          minWidth: 200.0,
+          scale: 1.0,
+          scaleMobile: 0.75, // Better performance on mobile
+          color: 0x00ffff,
+          backgroundColor: 0x0f0f23,
+          size: 1.0,
+          points: 10,
+        });
+      }
+    };
+
+    loadVanta();
+
     return () => {
       if (vantaEffect.current) {
         vantaEffect.current.destroy();
@@ -70,15 +74,17 @@ const Hero = ({ personalData }) => {
     <section
       id="hero"
       ref={vantaRef}
-      className="relative min-h-screen overflow-hidden flex items-center justify-center"
+      className="relative min-h-screen overflow-hidden flex items-center justify-center bg-[#0f0f23] pt-24 pb-32"
+      aria-hidden="true"
     >
-      <div className="absolute inset-0 z-0" />
-      <div className="absolute inset-0 overflow-hidden">
+      {/* Overlay Blobs */}
+      <div className="absolute inset-0 overflow-hidden z-0">
         <div className="absolute -top-4 -left-4 w-72 h-72 bg-blue-500/10 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
         <div className="absolute -bottom-8 -right-4 w-72 h-72 bg-purple-500/10 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-1000"></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-cyan-500/5 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-500"></div>
       </div>
 
+      {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
         <div className="animate-fade-in-up">
           <p className="text-xl text-blue-400 mb-4 animate-fade-in delay-200">

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { mockData } from '../mock';
+import React, { useState, useEffect } from 'react';
+import { portfolioAPI } from '../services/api';
 import { ExternalLink, Github, Filter } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
@@ -8,18 +8,47 @@ import { Badge } from './ui/badge';
 const Projects = () => {
   const [activeFilter, setActiveFilter] = useState('All');
   const [hoveredProject, setHoveredProject] = useState(null);
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const filters = ['All', 'AI', 'Web'];
-  
-  const filteredProjects = activeFilter === 'All' 
-    ? mockData.projects 
-    : mockData.projects.filter(project => project.category === activeFilter);
 
-  const featuredProjects = filteredProjects.filter(project => project.featured);
-  const regularProjects = filteredProjects.filter(project => !project.featured);
+  useEffect(() => {
+    const fetchProjects = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await portfolioAPI.getProjects();
+        setProjects(response.data.data);
+      } catch (err) {
+        setError('Failed to load projects.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProjects();
+  }, []);
+
+  const filteredProjects = Array.isArray(projects)
+    ? (activeFilter === 'All'
+      ? projects
+      : projects.filter(project => project.category === activeFilter))
+    : [];
+
+  const featuredProjects = Array.isArray(filteredProjects)
+    ? filteredProjects.filter(project => project.featured)
+    : [];
+  const regularProjects = Array.isArray(filteredProjects)
+    ? filteredProjects.filter(project => !project.featured)
+    : [];
+
+  // Ensure unique keys for project cards
+  const getProjectKey = (project) => project._id || project.id || project.title;
 
   const ProjectCard = ({ project, featured = false }) => (
-    <Card 
+    <Card
+      key={project._id || project.id}
       className={`group cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl bg-gray-800/50 border-gray-700 hover:border-blue-500/50 ${
         featured ? 'lg:col-span-2' : ''
       }`}
@@ -27,7 +56,7 @@ const Projects = () => {
       onMouseLeave={() => setHoveredProject(null)}
     >
       <div className="relative overflow-hidden rounded-t-lg">
-        <img 
+        <img
           src={project.image}
           alt={project.title}
           className={`w-full object-cover transition-transform duration-300 group-hover:scale-110 ${
@@ -61,7 +90,7 @@ const Projects = () => {
           </div>
         )}
       </div>
-      
+
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-white group-hover:text-blue-400 transition-colors duration-300">
@@ -72,20 +101,20 @@ const Projects = () => {
           </Badge>
         </div>
       </CardHeader>
-      
+
       <CardContent className="pt-0">
         <p className="text-gray-400 mb-4 leading-relaxed">
           {project.description}
         </p>
-        
+
         <div className="space-y-3">
           <div>
             <p className="text-sm text-gray-500 mb-2">Tech Stack:</p>
             <div className="flex flex-wrap gap-2">
               {project.techStack.map((tech) => (
-                <Badge 
-                  key={tech} 
-                  variant="secondary" 
+                <Badge
+                  key={tech}
+                  variant="secondary"
                   className="bg-gray-700 text-gray-300 text-xs"
                 >
                   {tech}
@@ -93,7 +122,7 @@ const Projects = () => {
               ))}
             </div>
           </div>
-          
+
           <div className="flex gap-3 pt-2">
             <Button
               size="sm"
@@ -117,6 +146,26 @@ const Projects = () => {
       </CardContent>
     </Card>
   );
+
+  if (loading) {
+    return (
+      <section id="projects" className="py-20 bg-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
+          Loading projects...
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section id="projects" className="py-20 bg-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-red-500">
+          {error}
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="projects" className="py-20 bg-gray-800">
@@ -164,9 +213,9 @@ const Projects = () => {
                   Featured Projects
                 </h3>
                 <div className="grid lg:grid-cols-6 gap-8">
-                  {featuredProjects.map((project) => (
-                    <ProjectCard key={project.id} project={project} featured={true} />
-                  ))}
+            {featuredProjects.map((project) => (
+              <ProjectCard key={project._id || project.id || project.title} project={project} featured={true} />
+            ))}
                 </div>
               </div>
             )}
@@ -180,7 +229,7 @@ const Projects = () => {
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {regularProjects.map((project) => (
-                    <ProjectCard key={project.id} project={project} />
+                    <ProjectCard key={project._id || project.id || project.title} project={project} />
                   ))}
                 </div>
               </div>

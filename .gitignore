@@ -1,13 +1,17 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# IDE and editors
-.idea/
+# ===================
+# IDEs & Editors
+# ===================
 .vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
 
-# Dependencies
+# ===================
+# Node Dependencies
+# ===================
 node_modules/
-/node_modules
-/.pnp
+**/node_modules/
+.pnp/
 .pnp.js
 .yarn/install-state.gz
 .yarn/*
@@ -16,65 +20,83 @@ node_modules/
 !.yarn/releases
 !.yarn/versions
 
-# Testing
-/coverage
-
-# Next.js
-/.next/
-/out/
-next-env.d.ts
-*.tsbuildinfo
-
-# Production builds
-/build
+# ===================
+# Build Artifacts
+# ===================
+build/
 dist/
-dist
+.cache/
+.vite/
+frontend/dist/
+backend/uploads/
 
-# Environment files (comprehensive coverage)
+# ===================
+# Environment Files
+# ===================
+.env
+.env.*.local
+.env.local
+.env.development
+.env.production
+frontend/.env
+backend/.env
 
-*token.json*
-*credentials.json*
-
-# Logs and debug files
+# ===================
+# Logs & Debugging
+# ===================
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.pnpm-debug.log*
-dump.rdb
+pnpm-debug.log*
+*.log
 
-# System files
+# ===================
+# System Files
+# ===================
 .DS_Store
+Thumbs.db
 *.pem
 
-# Python
+# ===================
+# Python (for backend_test.py)
+# ===================
 __pycache__/
-*pyc*
-venv/
+*.py[cod]
 .venv/
+venv/
 
-# Development tools
-chainlit.md
-.chainlit
-.ipynb_checkpoints/
-.ac
+# ===================
+# Temporary / Backup
+# ===================
+*.tmp
+*.bak
+*.old
+*.swp
+*.seed
 
-# Deployment
-.vercel
+# ===================
+# Test / API Client Files
+# ===================
+thunder-client-tests.json
+curl-tests.sh
+backend_test.py
+test_result.md
 
-# Data and databases
-agenthub/agents/youtube/db
+# ===================
+# Archive Files
+# ===================
+*.zip
+*.tar
+*.tar.gz
+*.tgz
 
-# Archive files and large assets
-**/*.zip
-**/*.tar.gz
-**/*.tar
-**/*.tgz
-*.pack
-*.deb
-*.dylib
+# ===================
+# Resume & Asset Protection
+# ===================
+frontend/public/Naveen Agarwal - Frontend.pdf
+frontend/public/NaveenAgarwal_Backend.pdf
 
-# Build caches
-.cache/
-
-# Mobile development
-android-sdk/ 
+# ===================
+# Git Ignore Catch-all (optional)
+# ===================
+*.log

@@ -11,6 +11,9 @@ import Footer from './components/Footer';
 import AdminLogin from './components/admin/AdminLogin';
 import AdminLayout from './components/admin/AdminLayout';
 import AdminDashboard from './components/admin/AdminDashboard';
+import AdminProjects from './components/admin/AdminProjects';
+import AdminProjectNew from './components/admin/AdminProjectNew';
+import AdminProjectEdit from './components/admin/AdminProjectEdit';
 import ProtectedRoute from './components/admin/ProtectedRoute';
 import { AuthProvider } from './contexts/AuthContext';
 import { Toaster } from './components/ui/toaster';
@@ -144,7 +147,9 @@ function App() {
               <Route index element={<AdminDashboard />} />
               <Route path="dashboard" element={<AdminDashboard />} />
               {/* Placeholder routes - will be implemented next */}
-              <Route path="projects" element={<div className="p-6 text-white">Projects Management - Coming Soon</div>} />
+              <Route path="projects" element={<AdminProjects />} />
+              <Route path="projects/new" element={<AdminProjectNew />} />
+              <Route path="projects/edit/:id" element={<AdminProjectEdit />} />
               <Route path="personal" element={<div className="p-6 text-white">Personal Info - Coming Soon</div>} />
               <Route path="tech-stack" element={<div className="p-6 text-white">Tech Stack - Coming Soon</div>} />
               <Route path="messages" element={<div className="p-6 text-white">Messages - Coming Soon</div>} />

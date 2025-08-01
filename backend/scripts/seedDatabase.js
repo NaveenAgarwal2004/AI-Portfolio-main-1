@@ -21,79 +21,101 @@ const mockData = {
     profileImageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face",
     resumeUrl: "",
     socialLinks: {
-      github: "https://github.com/naveen-agarwal",
-      linkedin: "https://linkedin.com/in/naveen-agarwal-dev",
-      twitter: "https://twitter.com/naveen_dev",
-      email: "mailto:naveen.agarwal.dev@gmail.com"
+      github: "https://github.com/NaveenAgarwal2004",
+    linkedin: "https://linkedin.com/in/naveen-agar",
+    email: "mailto:naveenagarwal7624@gmail.com",
+    twitter: "https://x.com/NaveenAgar47373"
     }
   },
 
   projects: [
     {
-      title: "Personal Portfolio Website",
-      description: "A responsive personal portfolio website built with React.js and Tailwind CSS, featuring smooth animations and modern design principles.",
-      category: "Web",
-      image: "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=500&h=300&fit=crop",
-      techStack: ["React", "Tailwind CSS", "JavaScript", "HTML5"],
-      githubUrl: "https://github.com/naveen/portfolio-website",
-      liveUrl: "https://naveen-portfolio.vercel.app",
-      featured: true,
+      title: "AI Portfolio",
+      description: "An innovative AI-powered portfolio website built with modern JavaScript. Features dynamic content generation, interactive AI elements, and cutting-edge web technologies. Recently updated with latest features and optimizations.",
+      category: "AI",
+      image: "/Assests/Project Images/AI Portfolio.jpeg",
+      techStack: ["JavaScript", "React", "AI Integration", "CSS3", "Modern Web APIs"],
+      githubUrl: "https://github.com/NaveenAgarwal2004/AI-Portfolio-main-1",
+      liveUrl: "https://naveen-ai-portfolio.vercel.app",
+      featured: false,
       order: 1
     },
     {
-      title: "Weather Dashboard",
-      description: "A weather application that fetches real-time weather data using a public API, showcasing API integration skills.",
+      title: "Street Bazaar Platform",
+      description: "A comprehensive e-commerce platform for street vendors and local businesses built with Python. Features vendor management, product catalog, order processing, and payment integration. Supports local marketplace economy.",
       category: "Web",
-      image: "https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?w=500&h=300&fit=crop",
-      techStack: ["JavaScript", "CSS3", "Weather API", "Bootstrap"],
-      githubUrl: "https://github.com/naveen/weather-dashboard",
-      liveUrl: "https://naveen-weather-app.netlify.app",
+      image: "/Assests/Project Images/StreetBazzar.jpeg",
+      techStack: ["Python", "Django", "PostgreSQL", "REST API", "Payment Gateway"],
+      githubUrl: "https://github.com/NaveenAgarwal2004/Street-Bazaar",
+      liveUrl: "https://street-bazaar-app.herokuapp.com",
       featured: true,
       order: 2
     },
     {
-      title: "Landing Page Clone",
-      description: "A pixel-perfect recreation of a modern landing page to practice CSS layout techniques and responsive design principles.",
+      title: "Job Board Application",
+      description: "A full-featured job portal built with TypeScript. Includes job posting, application tracking, resume management, and advanced search filters. Features employer dashboard and candidate matching system.",
       category: "Web",
-      image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500&h=300&fit=crop",
-      techStack: ["HTML5", "CSS3", "JavaScript", "Responsive Design"],
-      githubUrl: "https://github.com/naveen/landing-page-clone",
-      liveUrl: "https://naveen-landing-clone.netlify.app",
-      featured: true,
+      image: "/Assests/Project Images/Job Board.png",
+      techStack: ["TypeScript", "React", "Node.js", "MongoDB", "JWT Auth"],
+      githubUrl: "https://github.com/NaveenAgarwal2004/Job-Board",
+      liveUrl: "https://naveen-job-board.netlify.app",
+      featured: false,
       order: 3
     },
     {
-      title: "Todo List App",
-      description: "A simple yet functional todo list application with local storage, built to practice JavaScript fundamentals and DOM manipulation.",
+      title: "Task Management System",
+      description: "An advanced project and task management application built with TypeScript. Features team collaboration, project timelines, task dependencies, and real-time updates. Includes Kanban boards and Gantt charts.",
       category: "Web",
-      image: "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=500&h=300&fit=crop",
-      techStack: ["HTML5", "CSS3", "JavaScript", "LocalStorage"],
-      githubUrl: "https://github.com/naveen/todo-app",
-      liveUrl: "https://naveen-todo-app.netlify.app",
-      featured: false,
+      image: "/Assests/Project Images/Task Management.jpeg",
+      techStack: ["TypeScript", "React", "Node.js", "Socket.io", "MongoDB"],
+      githubUrl: "https://github.com/NaveenAgarwal2004/Task-Management-System",
+      liveUrl: "https://naveen-task-system.vercel.app",
+      featured: true,
       order: 4
     },
     {
-      title: "Recipe Finder App",
-      description: "A recipe search application that helps users find recipes based on ingredients, built to practice API handling and React components.",
+      title: "Contact Management System",
+      description: "A comprehensive CRM system for managing contacts and relationships. Built with TypeScript, featuring contact organization, communication tracking, and analytics dashboard. Includes import/export functionality.",
       category: "Web",
-      image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=500&h=300&fit=crop",
-      techStack: ["React", "CSS3", "Recipe API", "JavaScript"],
-      githubUrl: "https://github.com/naveen/recipe-finder",
-      liveUrl: "https://naveen-recipe-app.netlify.app",
-      featured: false,
+      image: "/Assests/Project Images/Contact Management.jpeg",
+      techStack: ["TypeScript", "React", "Express.js", "MongoDB", "Chart.js"],
+      githubUrl: "https://github.com/NaveenAgarwal2004/Contact-Management-System",
+      liveUrl: "https://naveen-crm-system.netlify.app",
+      featured: true,
       order: 5
     },
     {
-      title: "Simple AI Chatbot",
-      description: "A basic chatbot interface built with React that demonstrates understanding of AI integration concepts and modern UI development.",
-      category: "AI",
-      image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=500&h=300&fit=crop",
-      techStack: ["React", "CSS3", "JavaScript", "API Integration"],
-      githubUrl: "https://github.com/naveen/simple-chatbot",
-      liveUrl: "https://naveen-chatbot-demo.vercel.app",
+      title: "Online Food Ordering App",
+      description: "A beautiful UI for an online food delivery application. Features restaurant listings, menu browsing, cart management, and order tracking. Built with modern JavaScript and responsive design principles.",
+      category: "Web",
+      image: "/Assests/Project Images/Food Ordering.png",
+      techStack: ["JavaScript", "HTML5", "CSS3", "Responsive Design", "UI/UX"],
+      githubUrl: "https://github.com/NaveenAgarwal2004/Online-Food-Application",
+      liveUrl: "https://naveen-food-app.netlify.app",
       featured: false,
       order: 6
+    },
+    {
+      title: "Movie Reservation System",
+      description: "A complete movie ticket booking system with seat selection, showtime management, and booking confirmation. Built with TypeScript for better code reliability. Features interactive seat map and payment processing.",
+      category: "Web",
+      image: "/Assests/Project Images/Movie Reservstion.png",
+      techStack: ["TypeScript", "React", "CSS3", "LocalStorage", "Payment API"],
+      githubUrl: "https://github.com/NaveenAgarwal2004/Movie-Reservation-System",
+      liveUrl: "https://naveen-movie-booking.netlify.app",
+      featured: true,
+      order: 7
+    },
+    {
+      title: "CryptoCurrency Tracker",
+      description: "A comprehensive cryptocurrency tracking application built with TypeScript. Features real-time price updates, market data visualization, portfolio tracking, and responsive design with interactive charts and market analysis.",
+      category: "Web",
+      image: "/Assests/Project Images/Crypto Tracker.jpeg",
+      techStack: ["TypeScript", "React", "CSS3", "Crypto API", "Chart.js"],
+      githubUrl: "https://github.com/NaveenAgarwal2004/CryptoCurrency-Tracker",
+      liveUrl: "https://naveen-crypto-tracker.vercel.app",
+      featured: true,
+      order: 8
     }
   ],
 
@@ -129,8 +151,8 @@ async function seedDatabase() {
 
     // Create admin user
     const adminUser = new User({
-      email: 'admin@naveen-portfolio.com',
-      password: 'N@veenDev#2025',
+      email: 'naveenagarwal7624@gmail.com',
+      password: 'MySecure!2025@Portfolio',
       role: 'admin'
     });
     await adminUser.save();
@@ -153,12 +175,6 @@ async function seedDatabase() {
       const tech = new TechStack(techData);
       await tech.save();
     }
-    console.log('Tech stack created');
-
-    console.log('✅ Database seeded successfully with fresher profile!');
-    console.log('Admin login credentials:');
-    console.log('Email: admin@naveen-portfolio.com');
-    console.log('Password: N@veenDev#2025');
 
   } catch (error) {
     console.error('Error seeding database:', error);

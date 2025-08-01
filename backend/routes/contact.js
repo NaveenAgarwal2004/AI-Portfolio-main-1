@@ -5,16 +5,16 @@ const { contactValidation, handleValidationErrors } = require('../middleware/val
 
 const router = express.Router();
 
-// POST /api/contact - Submit contact form
+// 📩 POST /api/contact - Submit contact form
 router.post('/', contactValidation, handleValidationErrors, async (req, res) => {
   try {
     const { name, email, message } = req.body;
 
-    // Get client IP and user agent for security
+    // Get client IP and user agent
     const ipAddress = req.ip || req.connection.remoteAddress || req.socket.remoteAddress;
     const userAgent = req.get('User-Agent');
 
-    // Save contact submission to database
+    // 💾 Save contact submission to database
     const contact = new Contact({
       name,
       email,
@@ -25,24 +25,23 @@ router.post('/', contactValidation, handleValidationErrors, async (req, res) => 
 
     await contact.save();
 
-    // Send email notification to admin
+    // 📧 Send admin notification
     try {
       await sendContactEmail({ name, email, message });
-      console.log('Admin notification email sent successfully');
+      console.log('✅ Admin email sent successfully');
     } catch (emailError) {
-      console.error('Failed to send admin email:', emailError);
-      // Continue execution - don't fail the request if email fails
+      console.error('❌ Failed to send admin email:', emailError.message);
     }
 
-    // Send auto-reply to user
+    // 🤖 Send auto-reply
     try {
       await sendAutoReply({ name, email });
-      console.log('Auto-reply email sent successfully');
-    } catch (autoReplyError) {
-      console.error('Failed to send auto-reply:', autoReplyError);
-      // Continue execution - auto-reply failure is not critical
+      console.log('✅ Auto-reply sent successfully');
+    } catch (replyError) {
+      console.error('❌ Failed to send auto-reply:', replyError.message);
     }
 
+    // 🎉 Final Response
     res.status(201).json({
       success: true,
       message: 'Thank you for your message! I will get back to you soon.',
@@ -53,9 +52,8 @@ router.post('/', contactValidation, handleValidationErrors, async (req, res) => 
     });
 
   } catch (error) {
-    console.error('Contact form submission error:', error);
-    
-    // Handle specific validation errors
+    console.error('💥 Contact form submission error:', error);
+
     if (error.name === 'ValidationError') {
       const errors = Object.values(error.errors).map(err => err.message);
       return res.status(400).json({
@@ -72,26 +70,17 @@ router.post('/', contactValidation, handleValidationErrors, async (req, res) => 
   }
 });
 
-// GET /api/contact/messages - Get all contact messages (admin only)
+// 📨 GET /api/contact/messages - Admin: View messages
 router.get('/messages', async (req, res) => {
   try {
     const { status, page = 1, limit = 10 } = req.query;
-    
     let query = {};
-    if (status && status !== 'all') {
-      query.status = status;
-    }
-
-    const options = {
-      page: parseInt(page),
-      limit: parseInt(limit),
-      sort: { createdAt: -1 }
-    };
+    if (status && status !== 'all') query.status = status;
 
     const contacts = await Contact.find(query)
-      .sort(options.sort)
-      .limit(options.limit * 1)
-      .skip((options.page - 1) * options.limit);
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(parseInt(limit));
 
     const total = await Contact.countDocuments(query);
 
@@ -100,16 +89,16 @@ router.get('/messages', async (req, res) => {
       data: {
         contacts,
         pagination: {
-          page: options.page,
-          limit: options.limit,
+          page: parseInt(page),
+          limit: parseInt(limit),
           total,
-          pages: Math.ceil(total / options.limit)
+          pages: Math.ceil(total / limit)
         }
       }
     });
 
   } catch (error) {
-    console.error('Error fetching contact messages:', error);
+    console.error('💥 Error fetching messages:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to fetch contact messages'
@@ -117,7 +106,7 @@ router.get('/messages', async (req, res) => {
   }
 });
 
-// PUT /api/contact/messages/:id/status - Update contact message status
+// ✏️ PUT /api/contact/messages/:id/status - Admin: Update status
 router.put('/messages/:id/status', async (req, res) => {
   try {
     const { id } = req.params;
@@ -130,11 +119,7 @@ router.put('/messages/:id/status', async (req, res) => {
       });
     }
 
-    const contact = await Contact.findByIdAndUpdate(
-      id,
-      { status },
-      { new: true }
-    );
+    const contact = await Contact.findByIdAndUpdate(id, { status }, { new: true });
 
     if (!contact) {
       return res.status(404).json({
@@ -150,7 +135,7 @@ router.put('/messages/:id/status', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error updating contact status:', error);
+    console.error('💥 Error updating contact status:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to update contact status'
