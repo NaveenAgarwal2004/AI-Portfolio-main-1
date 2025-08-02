@@ -34,16 +34,16 @@ const About = () => {
   // Use personalData if available
   const displayData = personalData;
 
-  const resumes = [
+  const resumes = displayData ? [
     {
       name: "Frontend Resume",
-      url: displayData.resumeUrl || "/Naveen Agarwal - Frontend.pdf"
+      url: (displayData.resumeUrl || displayData.frontendResumeUrl) || "/Naveen Agarwal - Frontend.pdf"
     },
     {
       name: "Backend Resume",
-      url: "/NaveenAgarwal_Backend.pdf"
+      url: displayData.backendResumeUrl || "/NaveenAgarwal_Backend.pdf"
     }
-  ];
+  ] : [];
 
   const handleDownloadResume = (url, name) => {
     // Download resume from public folder
