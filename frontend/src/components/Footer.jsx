@@ -1,9 +1,27 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Github, Linkedin, Mail, Twitter, Heart, ArrowUp } from 'lucide-react';
 import { Button } from './ui/button';
-import { mockData } from '../mock';
+import { portfolioAPI } from '../services/api';
 
 const Footer = () => {
+  const [personalData, setPersonalData] = useState(null);
+  const currentYear = new Date().getFullYear();
+
+  useEffect(() => {
+    const fetchPersonalData = async () => {
+      try {
+        const response = await portfolioAPI.getPersonal();
+        if (response.data.success) {
+          setPersonalData(response.data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching personal data:', error);
+      }
+    };
+
+    fetchPersonalData();
+  }, []);
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -15,8 +33,6 @@ const Footer = () => {
     }
   };
 
-  const currentYear = new Date().getFullYear();
-
   const footerLinks = [
     { label: 'Home', id: 'hero' },
     { label: 'About', id: 'about' },
@@ -25,32 +41,32 @@ const Footer = () => {
     { label: 'Contact', id: 'contact' }
   ];
 
-  const socialLinks = [
+  const socialLinks = personalData?.socialLinks ? [
     {
       icon: Github,
-      href: mockData.socialLinks.github,
+      href: personalData.socialLinks.github,
       label: 'GitHub',
       color: 'hover:text-gray-300'
     },
     {
       icon: Linkedin,
-      href: mockData.socialLinks.linkedin,
+      href: personalData.socialLinks.linkedin,
       label: 'LinkedIn',
       color: 'hover:text-blue-400'
     },
     {
       icon: Twitter,
-      href: mockData.socialLinks.twitter,
+      href: personalData.socialLinks.twitter,
       label: 'Twitter',
       color: 'hover:text-cyan-400'
     },
     {
       icon: Mail,
-      href: mockData.socialLinks.email,
+      href: `mailto:${personalData.socialLinks.email || personalData.email}`,
       label: 'Email',
       color: 'hover:text-red-400'
     }
-  ];
+  ] : [];
 
   return (
     <footer className="bg-gray-900 border-t border-gray-800">
@@ -114,24 +130,24 @@ const Footer = () => {
               <div>
                 <p className="text-gray-500">Email</p>
                 <a 
-                  href={`mailto:${mockData.personal.email}`}
+                  href={`mailto:${personalData?.email}`}
                   className="text-gray-400 hover:text-white transition-colors duration-200"
                 >
-                  {mockData.personal.email}
+                  {personalData?.email}
                 </a>
               </div>
               <div>
                 <p className="text-gray-500">Phone</p>
                 <a 
-                  href={`tel:${mockData.personal.phone}`}
+                  href={`tel:${personalData?.phone}`}
                   className="text-gray-400 hover:text-white transition-colors duration-200"
                 >
-                  {mockData.personal.phone}
+                  {personalData?.phone}
                 </a>
               </div>
               <div>
                 <p className="text-gray-500">Location</p>
-                <p className="text-gray-400">{mockData.personal.location}</p>
+                <p className="text-gray-400">{personalData?.location}</p>
               </div>
             </div>
           </div>

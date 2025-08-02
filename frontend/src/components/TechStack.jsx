@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   FileCode, 
   Palette, 
@@ -12,7 +12,7 @@ import {
   Github 
 } from 'lucide-react';
 import { Card, CardContent } from './ui/card';
-import { mockData } from '../mock';
+import { portfolioAPI } from '../services/api';
 
 // Icon mapping
 const iconMap = {
@@ -29,6 +29,46 @@ const iconMap = {
 };
 
 const TechStack = () => {
+  const [techStack, setTechStack] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchTechStack = async () => {
+      try {
+        const response = await portfolioAPI.getTechStack();
+        setTechStack(response.data.data);
+      } catch (err) {
+        setError('Failed to load tech stack.');
+        console.error('Error fetching tech stack:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTechStack();
+  }, []);
+
+  if (loading) {
+    return (
+      <section id="tech-stack" className="py-20 bg-gray-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
+          Loading tech stack...
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section id="tech-stack" className="py-20 bg-gray-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-red-500">
+          {error}
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="tech-stack" className="py-20 bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -45,12 +85,12 @@ const TechStack = () => {
 
         {/* Tech Stack Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-          {mockData.techStack.map((tech, index) => {
+          {techStack.map((tech) => {
             const Icon = iconMap[tech.icon];
             
             return (
               <Card 
-                key={tech.name}
+                key={tech._id || tech.id || tech.name}
                 className="bg-gray-800/50 border-gray-700 hover:border-blue-500/50 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-blue-500/10 group cursor-pointer"
               >
                 <CardContent className="p-6 text-center">

@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Send, Mail, MapPin, Phone, Github, Linkedin, Twitter } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { useToast } from '../hooks/use-toast';
-import { contactAPI } from '../services/api';
+import { contactAPI, portfolioAPI } from '../services/api';
 
 const Contact = () => {
   const { toast } = useToast();
@@ -15,6 +15,25 @@ const Contact = () => {
     message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [personalData, setPersonalData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPersonalData = async () => {
+      try {
+        const response = await portfolioAPI.getPersonal();
+        if (response.data.success) {
+          setPersonalData(response.data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching personal data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPersonalData();
+  }, []);
 
   const handleChange = (e) => {
     setFormData({
@@ -76,56 +95,83 @@ const Contact = () => {
     }
   };
 
-  const contactInfo = [
+  const contactInfo = personalData ? [
     {
       icon: Mail,
       label: 'Email',
-      value: 'naveenagarwal7624@gmail.com',
-      href: 'mailto:naveenagarwal7624@gmail.com',
+      value: personalData.email,
+      href: `mailto:${personalData.email}`,
       color: 'text-blue-400'
     },
     {
       icon: Phone,
       label: 'Phone',
-      value: '+91 90796 91064',
-      href: 'tel:+919079691064',
+      value: personalData.phone,
+      href: `tel:${personalData.phone}`,
       color: 'text-green-400'
     },
     {
       icon: MapPin,
       label: 'Location',
-      value: 'India',
+      value: personalData.location,
       href: '#',
       color: 'text-purple-400'
     }
-  ];
+  ] : [];
 
-  const socialLinks = [
+  const socialLinks = personalData?.socialLinks ? [
     {
       icon: Github,
       label: 'GitHub',
-      href: 'https://github.com/NaveenAgarwal2004',
+      href: personalData.socialLinks.github,
       color: 'hover:text-gray-400'
     },
     {
       icon: Linkedin,
       label: 'LinkedIn',
-      href: 'https://linkedin.com/in/naveen-agar',
+      href: personalData.socialLinks.linkedin,
       color: 'hover:text-blue-400'
     },
     {
       icon: Twitter,
       label: 'Twitter',
-      href: 'https://twitter.com/NaveenAgar47373',
+      href: personalData.socialLinks.twitter,
       color: 'hover:text-cyan-400'
     },
     {
       icon: Mail,
       label: 'Email',
-      href: 'mailto:naveenagarwal7624@gmail.com',
+      href: `mailto:${personalData.socialLinks.email || personalData.email}`,
       color: 'hover:text-red-400'
     }
-  ];
+  ] : [];
+
+  if (loading) {
+    return (
+      <section id="contact" className="py-20 bg-gray-900 ">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Section Header */}
+          <div className="text-center mb-16">
+            <div className="animate-pulse">
+              <div className="h-12 bg-gray-700 rounded w-64 mx-auto mb-4"></div>
+              <div className="h-6 bg-gray-700 rounded w-96 mx-auto mb-8"></div>
+              <div className="grid lg:grid-cols-2 gap-12">
+                <div className="space-y-8">
+                  <div className="h-96 bg-gray-700 rounded-lg"></div>
+                  <div className="h-64 bg-gray-700 rounded-lg"></div>
+                </div>
+                <div className="space-y-8">
+                  <div className="h-32 bg-gray-700 rounded-lg"></div>
+                  <div className="h-32 bg-gray-700 rounded-lg"></div>
+                  <div className="h-32 bg-gray-700 rounded-lg"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="contact" className="py-20 bg-gray-900 ">
@@ -295,15 +341,6 @@ const Contact = () => {
                 I typically respond to messages within 24 hours. For urgent inquiries, 
                 feel free to reach out via phone or LinkedIn for faster communication.
               </p>
-            </div>
-            
-            {/* Debug Info */}
-            <div className="bg-gray-800/30 border border-gray-600 rounded-lg p-4">
-              <h4 className="text-gray-300 font-medium mb-2">Debug Info</h4>
-              <div className="text-xs text-gray-400 space-y-1">
-                <div>Backend URL: {process.env.REACT_APP_BACKEND_URL || 'Not set'}</div>
-                <div>Environment: {process.env.NODE_ENV}</div>
-              </div>
             </div>
           </div>
         </div>

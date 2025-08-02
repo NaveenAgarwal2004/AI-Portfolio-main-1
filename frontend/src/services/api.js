@@ -125,6 +125,22 @@ export const adminAPI = {
     });
   },
   
+  uploadFrontendResume: (file) => {
+    const formData = new FormData();
+    formData.append('frontendResume', file);
+    return apiClient.post('/admin/upload/frontend-resume', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+  },
+  
+  uploadBackendResume: (file) => {
+    const formData = new FormData();
+    formData.append('backendResume', file);
+    return apiClient.post('/admin/upload/backend-resume', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+  },
+  
   uploadProfileImage: (file) => {
     const formData = new FormData();
     formData.append('profileImage', file);

@@ -2,12 +2,28 @@ import React, { useState, useEffect } from 'react';
 import { Download, Home, User, Briefcase, Mail, Code } from 'lucide-react';
 import AnimatedHamburgerIcon from './ui/AnimatedHamburgerIcon';
 import { Button } from './ui/button';
-import { mockData } from '../mock';
+import { portfolioAPI } from '../services/api';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isResumeOpen, setIsResumeOpen] = useState(false);
+  const [personalData, setPersonalData] = useState(null);
+
+  useEffect(() => {
+    const fetchPersonalData = async () => {
+      try {
+        const response = await portfolioAPI.getPersonal();
+        if (response.data.success) {
+          setPersonalData(response.data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching personal data:', error);
+      }
+    };
+
+    fetchPersonalData();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,16 +34,16 @@ const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const resumes = [
+  const resumes = personalData ? [
     {
       name: "Frontend Resume",
-      url: "/Naveen Agarwal - Frontend.pdf"
+      url: personalData.resumeUrl || "/Naveen Agarwal - Frontend.pdf"
     },
     {
       name: "Backend Resume",
-      url: "/NaveenAgarwal_Backend.pdf"
+      url: personalData.backendResumeUrl || "/NaveenAgarwal_Backend.pdf"
     }
-  ];
+  ] : [];
 
   const handleDownloadResume = (url, name) => {
     // Download resume from public folder

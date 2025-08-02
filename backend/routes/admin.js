@@ -236,7 +236,7 @@ router.put('/personal', personalValidation, handleValidationErrors, async (req, 
 
 // ============= FILE UPLOADS =============
 
-// POST /api/admin/upload/resume - Upload resume
+// POST /api/admin/upload/resume - Upload resume (deprecated - keeping for backward compatibility)
 router.post('/upload/resume', uploadResume.single('resume'), async (req, res) => {
   try {
     if (!req.file) {
@@ -284,6 +284,110 @@ router.post('/upload/resume', uploadResume.single('resume'), async (req, res) =>
     res.status(500).json({
       success: false,
       message: 'Failed to upload resume'
+    });
+  }
+});
+
+// POST /api/admin/upload/frontend-resume - Upload frontend resume
+router.post('/upload/frontend-resume', uploadResume.single('frontendResume'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: 'No frontend resume file provided'
+      });
+    }
+
+    let personal = await Personal.findOne();
+    
+    if (personal && personal.frontendResumePublicId) {
+      try {
+        await deleteFromCloudinary(personal.frontendResumePublicId, 'raw');
+      } catch (deleteError) {
+        console.error('Error deleting old frontend resume:', deleteError);
+      }
+    }
+
+    if (!personal) {
+      personal = new Personal({
+        name: 'Naveen Agarwal',
+        title: 'Front-End Web Developer',
+        tagline: 'Building modern, responsive web experiences',
+        bio: 'Passionate Front-End Developer',
+        email: 'naveen.agarwal.dev@gmail.com'
+      });
+    }
+
+    personal.frontendResumeUrl = req.file.path;
+    personal.frontendResumePublicId = req.file.public_id;
+    await personal.save();
+
+    res.json({
+      success: true,
+      message: 'Frontend resume uploaded successfully',
+      data: {
+        url: req.file.path,
+        publicId: req.file.public_id,
+        filename: req.file.filename
+      }
+    });
+  } catch (error) {
+    console.error('Frontend resume upload error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to upload frontend resume'
+    });
+  }
+});
+
+// POST /api/admin/upload/backend-resume - Upload backend resume
+router.post('/upload/backend-resume', uploadResume.single('backendResume'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: 'No backend resume file provided'
+      });
+    }
+
+    let personal = await Personal.findOne();
+    
+    if (personal && personal.backendResumePublicId) {
+      try {
+        await deleteFromCloudinary(personal.backendResumePublicId, 'raw');
+      } catch (deleteError) {
+        console.error('Error deleting old backend resume:', deleteError);
+      }
+    }
+
+    if (!personal) {
+      personal = new Personal({
+        name: 'Naveen Agarwal',
+        title: 'Front-End Web Developer',
+        tagline: 'Building modern, responsive web experiences',
+        bio: 'Passionate Front-End Developer',
+        email: 'naveen.agarwal.dev@gmail.com'
+      });
+    }
+
+    personal.backendResumeUrl = req.file.path;
+    personal.backendResumePublicId = req.file.public_id;
+    await personal.save();
+
+    res.json({
+      success: true,
+      message: 'Backend resume uploaded successfully',
+      data: {
+        url: req.file.path,
+        publicId: req.file.public_id,
+        filename: req.file.filename
+      }
+    });
+  } catch (error) {
+    console.error('Backend resume upload error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to upload backend resume'
     });
   }
 });

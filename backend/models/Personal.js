@@ -50,6 +50,22 @@ const personalSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
+  frontendResumeUrl: {
+    type: String,
+    default: ''
+  },
+  frontendResumePublicId: {
+    type: String,
+    default: ''
+  },
+  backendResumeUrl: {
+    type: String,
+    default: ''
+  },
+  backendResumePublicId: {
+    type: String,
+    default: ''
+  },
   socialLinks: {
     github: { type: String, default: '' },
     linkedin: { type: String, default: '' },
