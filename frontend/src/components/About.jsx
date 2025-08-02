@@ -78,6 +78,31 @@ const About = () => {
     );
   }
 
+  if (!displayData) {
+    return (
+      <section id="about" className="py-20 bg-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <div className="animate-pulse">
+              <div className="h-12 bg-gray-700 rounded w-64 mx-auto mb-4"></div>
+              <div className="h-6 bg-gray-700 rounded w-96 mx-auto mb-8"></div>
+              <div className="grid lg:grid-cols-2 gap-12">
+                <div className="space-y-8">
+                  <div className="h-80 bg-gray-700 rounded-2xl"></div>
+                  <div className="h-64 bg-gray-700 rounded-lg"></div>
+                </div>
+                <div className="space-y-8">
+                  <div className="h-32 bg-gray-700 rounded-lg"></div>
+                  <div className="h-64 bg-gray-700 rounded-lg"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="about" className="py-20 bg-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -101,7 +126,7 @@ const About = () => {
                 <div className="w-full h-full rounded-2xl overflow-hidden">
                   <img 
                     src={displayData.profileImageUrl || "Naveen.jpg"}
-                    alt={displayData.name}
+                    alt={displayData.name || "Naveen Agarwal"}
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                     onError={(e) => {
                       e.target.src = "Naveen.jpg";
@@ -118,15 +143,15 @@ const About = () => {
                 <div className="space-y-3">
                   <div className="flex items-center gap-3 text-gray-300">
                     <Mail className="h-5 w-5 text-blue-400" />
-                    <span>{displayData.email}</span>
+                    <span>{displayData.email || "naveen@example.com"}</span>
                   </div>
                   <div className="flex items-center gap-3 text-gray-300">
                     <Phone className="h-5 w-5 text-blue-400" />
-                    <span>{displayData.phone}</span>
+                    <span>{displayData.phone || "+1 (555) 123-4567"}</span>
                   </div>
                   <div className="flex items-center gap-3 text-gray-300">
                     <MapPin className="h-5 w-5 text-blue-400" />
-                    <span>{displayData.location}</span>
+                    <span>{displayData.location || "San Francisco, CA"}</span>
                   </div>
                 </div>
                 
