@@ -63,6 +63,10 @@ const generalRateLimiter = rateLimit({
   }
 });
 
+// Body parsing middleware
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
 // Apply rate limiting to specific routes (excluding contact and admin routes)
 app.use('/api/auth', generalRateLimiter, authRoutes);
 app.use('/api/portfolio', generalRateLimiter, portfolioRoutes);
@@ -70,10 +74,6 @@ app.use('/api/portfolio', generalRateLimiter, portfolioRoutes);
 app.use('/api/admin', adminRoutes);
 // Note: Contact routes have their own specific rate limiting, so we don't apply the general rate limiter here
 app.use('/api/contact', contactRoutes);
-
-// Body parsing middleware
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Logging middleware
 if (process.env.NODE_ENV !== 'production') {
