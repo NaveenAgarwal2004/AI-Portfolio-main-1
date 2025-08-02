@@ -55,12 +55,13 @@ const projectValidation = [
     .withMessage('Category must be either AI or Web'),
   body('image')
     .optional()
-    .isURL()
+    .trim()
+    .custom((value) => !value || require('validator').isURL(value))
     .withMessage('Image must be a valid URL'),
   body('imagePublicId')
     .optional()
     .trim()
-    .notEmpty()
+    .custom((value) => !value || value.trim().length > 0)
     .withMessage('Image public ID must be a string'),
   body('githubUrl')
     .isURL()
@@ -105,41 +106,59 @@ const personalValidation = [
     .normalizeEmail(), // Move normalizeEmail after validation
   body('phone')
     .optional()
-    .isMobilePhone()
+    .trim()
+    .custom((value) => {
+      if (!value) return true; // Allow empty values
+      // Remove spaces and validate as phone number
+      const cleanedValue = value.replace(/\s+/g, '');
+      return /^[\+]?[1-9][\d]{0,15}$/.test(cleanedValue) || 
+             /^[\+]?[1-9][\d\s\-\(\)]{0,15}$/.test(value);
+    })
     .withMessage('Please provide a valid phone number'),
   body('profileImageUrl')
     .optional()
-    .isURL()
+    .trim()
+    .custom((value) => !value || require('validator').isURL(value))
     .withMessage('Profile image must be a valid URL'),
   body('resumeUrl')
     .optional()
-    .isURL()
+    .trim()
+    .custom((value) => !value || require('validator').isURL(value))
     .withMessage('Resume must be a valid URL'),
   body('resumePublicId')
     .optional()
     .trim()
-    .notEmpty()
+    .custom((value) => !value || value.trim().length > 0)
     .withMessage('Resume public ID must be a string'),
   body('profileImagePublicId')
     .optional()
     .trim()
-    .notEmpty()
+    .custom((value) => !value || value.trim().length > 0)
     .withMessage('Profile image public ID must be a string'),
   body('socialLinks.github')
     .optional()
-    .isURL()
+    .trim()
+    .custom((value) => !value || require('validator').isURL(value))
     .withMessage('GitHub URL must be a valid URL'),
   body('socialLinks.linkedin')
     .optional()
-    .isURL()
+    .trim()
+    .custom((value) => !value || require('validator').isURL(value))
     .withMessage('LinkedIn URL must be a valid URL'),
   body('socialLinks.twitter')
     .optional()
-    .isURL()
+    .trim()
+    .custom((value) => !value || require('validator').isURL(value))
     .withMessage('Twitter URL must be a valid URL'),
   body('socialLinks.email')
     .optional()
-    .isEmail()
+    .trim()
+    .custom((value) => {
+      if (!value) return true; // Allow empty values
+      // Remove mailto: prefix if present
+      const emailValue = value.replace(/^mailto:/, '');
+      return require('validator').isEmail(emailValue);
+    })
     .withMessage('Contact email must be a valid email')
 ];
 
@@ -161,12 +180,13 @@ const techStackValidation = [
     .withMessage('Category must be one of: Frontend, Backend, Database, Tools, Cloud, Mobile'),
   body('logoUrl')
     .optional()
-    .isURL()
+    .trim()
+    .custom((value) => !value || require('validator').isURL(value))
     .withMessage('Logo URL must be a valid URL'),
   body('logoPublicId')
     .optional()
     .trim()
-    .notEmpty()
+    .custom((value) => !value || value.trim().length > 0)
     .withMessage('Logo public ID must be a string'),
   body('order')
     .optional()
