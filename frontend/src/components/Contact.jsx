@@ -103,7 +103,7 @@ const Contact = () => {
   ];
 
   return (
-    <section id="contact" className="py-20 bg-gray-900">
+    <section id="contact" className="py-20 bg-gray-900 ">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-16">
@@ -116,7 +116,7 @@ const Contact = () => {
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12">
+        <div className="grid lg:grid-cols-2 gap-12 ">
           {/* Contact Form */}
           <Card className="bg-gray-800/50 border-gray-700">
             <CardHeader>
@@ -200,7 +200,7 @@ const Contact = () => {
           </Card>
 
           {/* Contact Information */}
-          <div className="space-y-8">
+          <div className="space-y-8 ">
             {/* Contact Details */}
             <Card className="bg-gray-800/50 border-gray-700">
               <CardHeader>

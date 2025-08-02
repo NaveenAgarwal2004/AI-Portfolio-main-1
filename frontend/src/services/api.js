@@ -124,4 +124,24 @@ export const adminAPI = {
   updateMessageStatus: (id, status) => apiClient.put(`/contact/messages/${id}/status`, { status })
 };
 
+// Add better error handling
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    console.error('API Error:', error.response?.data || error.message);
+    
+    if (error.response?.status === 401) {
+      localStorage.removeItem('authToken');
+      window.location.href = '/admin/login';
+    }
+    
+    // Handle CORS and network errors
+    if (!error.response) {
+      console.error('Network Error - Check CORS or Backend URL');
+    }
+    
+    return Promise.reject(error);
+  }
+);
+
 export default apiClient;
