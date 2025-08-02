@@ -2,7 +2,7 @@ import React from 'react';
 
 const AnimatedHamburgerIcon = ({ isOpen, className }) => {
   return (
-    <button
+    <div
       aria-label="Toggle menu"
       className={`relative w-6 h-6 focus:outline-none ${className}`}
       aria-expanded={isOpen}
@@ -22,7 +22,7 @@ const AnimatedHamburgerIcon = ({ isOpen, className }) => {
           isOpen ? '-rotate-45 top-2.5' : 'top-5'
         }`}
       />
-    </button>
+    </div>
   );
 };
 

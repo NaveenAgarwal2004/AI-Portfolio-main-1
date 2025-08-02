@@ -11,10 +11,6 @@ const techStackSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
-  logoUrl: {
-    type: String,
-    default: ''
-  },
   color: {
     type: String,
     required: true,
@@ -22,8 +18,18 @@ const techStackSchema = new mongoose.Schema({
   },
   category: {
     type: String,
-    enum: ['Frontend', 'Backend', 'Database', 'Tools', 'Cloud', 'Mobile'],
-    default: 'Frontend'
+    required: true,
+    enum: ['Frontend', 'Backend', 'Database', 'Tools', 'Cloud', 'Mobile']
+  },
+  logoUrl: {
+    type: String,
+    default: '',
+    trim: true
+  },
+  logoPublicId: {
+    type: String,
+    default: '',
+    trim: true
   },
   order: {
     type: Number,
@@ -34,6 +40,6 @@ const techStackSchema = new mongoose.Schema({
 });
 
 // Index for better query performance
-techStackSchema.index({ category: 1, order: 1 });
+techStackSchema.index({ category: 1, order: 1, name: 1 });
 
 module.exports = mongoose.model('TechStack', techStackSchema);

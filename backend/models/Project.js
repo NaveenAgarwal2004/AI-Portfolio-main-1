@@ -8,7 +8,8 @@ const projectSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-    required: true
+    required: true,
+    trim: true
   },
   category: {
     type: String,
@@ -17,7 +18,12 @@ const projectSchema = new mongoose.Schema({
   },
   image: {
     type: String,
-    required: true
+    required: true,
+    trim: true
+  },
+  imagePublicId: {
+    type: String,
+    default: ''
   },
   techStack: [{
     type: String,

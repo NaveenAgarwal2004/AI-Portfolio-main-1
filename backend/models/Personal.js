@@ -13,11 +13,13 @@ const personalSchema = new mongoose.Schema({
   },
   tagline: {
     type: String,
-    required: true
+    required: true,
+    trim: true
   },
   bio: {
     type: String,
-    required: true
+    required: true,
+    trim: true
   },
   email: {
     type: String,
@@ -33,6 +35,10 @@ const personalSchema = new mongoose.Schema({
     trim: true
   },
   profileImageUrl: {
+    type: String,
+    default: ''
+  },
+  profileImagePublicId: {
     type: String,
     default: ''
   },

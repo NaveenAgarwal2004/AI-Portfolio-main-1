@@ -29,11 +29,18 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
+    console.error('API Error:', error.response?.data || error.message);
+    
     if (error.response?.status === 401) {
-      // Token expired or invalid
       localStorage.removeItem('authToken');
       window.location.href = '/admin/login';
     }
+    
+    // Handle CORS and network errors
+    if (!error.response) {
+      console.error('Network Error - Check CORS or Backend URL');
+    }
+    
     return Promise.reject(error);
   }
 );
@@ -64,7 +71,14 @@ export const portfolioAPI = {
 
 export const contactAPI = {
   // Submit contact form
-  submitContact: (contactData) => apiClient.post('/contact', contactData)
+  submitContact: (contactData) => {
+    // Add bypass header for testing if in development
+    const config = {};
+    if (process.env.NODE_ENV === 'development') {
+      config.headers = { 'x-bypass-rate-limit': 'true' };
+    }
+    return apiClient.post('/contact', contactData, config);
+  }
 };
 
 // ============= AUTH APIs =============
@@ -119,9 +133,25 @@ export const adminAPI = {
     });
   },
   
+  uploadProjectImage: (file) => {
+    const formData = new FormData();
+    formData.append('projectImage', file);
+    return apiClient.post('/admin/upload/project-image', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+  },
+  
+  uploadTechLogo: (file) => {
+    const formData = new FormData();
+    formData.append('techLogo', file);
+    return apiClient.post('/admin/upload/tech-logo', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+  },
+  
   // Contact Messages
-  getMessages: (params = {}) => apiClient.get('/contact/messages', { params }),
-  updateMessageStatus: (id, status) => apiClient.put(`/contact/messages/${id}/status`, { status })
+  getMessages: (params = {}) => apiClient.get('/admin/contact/messages', { params }),
+  updateMessageStatus: (id, status) => apiClient.put(`/admin/contact/messages/${id}/status`, { status })
 };
 
 // Add better error handling

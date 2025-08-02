@@ -17,14 +17,14 @@ const handleValidationErrors = (req, res, next) => {
 const loginValidation = [
   body('email')
     .isEmail()
-    .normalizeEmail()
-    .withMessage('Please provide a valid email'),
+    .withMessage('Please provide a valid email')
+    .normalizeEmail(), // Move normalizeEmail after validation
   body('password')
     .isLength({ min: 8 })
     .withMessage('Password must be at least 8 characters long')
 ];
 
-// Contact form validation rules
+// Contact form validation rules - FIXED
 const contactValidation = [
   body('name')
     .trim()
@@ -32,8 +32,8 @@ const contactValidation = [
     .withMessage('Name must be between 2 and 100 characters'),
   body('email')
     .isEmail()
-    .normalizeEmail()
-    .withMessage('Please provide a valid email'),
+    .withMessage('Please provide a valid email')
+    .normalizeEmail(), // Move normalizeEmail after validation
   body('message')
     .trim()
     .isLength({ min: 10, max: 1000 })
@@ -54,8 +54,14 @@ const projectValidation = [
     .isIn(['AI', 'Web'])
     .withMessage('Category must be either AI or Web'),
   body('image')
+    .optional()
     .isURL()
     .withMessage('Image must be a valid URL'),
+  body('imagePublicId')
+    .optional()
+    .trim()
+    .notEmpty()
+    .withMessage('Image public ID must be a string'),
   body('githubUrl')
     .isURL()
     .withMessage('GitHub URL must be a valid URL'),
@@ -68,7 +74,11 @@ const projectValidation = [
   body('featured')
     .optional()
     .isBoolean()
-    .withMessage('Featured must be a boolean')
+    .withMessage('Featured must be a boolean'),
+  body('order')
+    .optional()
+    .isInt({ min: 0 })
+    .withMessage('Order must be a non-negative integer')
 ];
 
 // Personal info validation rules
@@ -91,8 +101,8 @@ const personalValidation = [
     .withMessage('Bio must be between 50 and 2000 characters'),
   body('email')
     .isEmail()
-    .normalizeEmail()
-    .withMessage('Please provide a valid email'),
+    .withMessage('Please provide a valid email')
+    .normalizeEmail(), // Move normalizeEmail after validation
   body('phone')
     .optional()
     .isMobilePhone()
@@ -100,7 +110,37 @@ const personalValidation = [
   body('profileImageUrl')
     .optional()
     .isURL()
-    .withMessage('Profile image must be a valid URL')
+    .withMessage('Profile image must be a valid URL'),
+  body('resumeUrl')
+    .optional()
+    .isURL()
+    .withMessage('Resume must be a valid URL'),
+  body('resumePublicId')
+    .optional()
+    .trim()
+    .notEmpty()
+    .withMessage('Resume public ID must be a string'),
+  body('profileImagePublicId')
+    .optional()
+    .trim()
+    .notEmpty()
+    .withMessage('Profile image public ID must be a string'),
+  body('socialLinks.github')
+    .optional()
+    .isURL()
+    .withMessage('GitHub URL must be a valid URL'),
+  body('socialLinks.linkedin')
+    .optional()
+    .isURL()
+    .withMessage('LinkedIn URL must be a valid URL'),
+  body('socialLinks.twitter')
+    .optional()
+    .isURL()
+    .withMessage('Twitter URL must be a valid URL'),
+  body('socialLinks.email')
+    .optional()
+    .isEmail()
+    .withMessage('Contact email must be a valid email')
 ];
 
 // Tech stack validation rules
@@ -122,7 +162,16 @@ const techStackValidation = [
   body('logoUrl')
     .optional()
     .isURL()
-    .withMessage('Logo URL must be a valid URL')
+    .withMessage('Logo URL must be a valid URL'),
+  body('logoPublicId')
+    .optional()
+    .trim()
+    .notEmpty()
+    .withMessage('Logo public ID must be a string'),
+  body('order')
+    .optional()
+    .isInt({ min: 0 })
+    .withMessage('Order must be a non-negative integer')
 ];
 
 module.exports = {

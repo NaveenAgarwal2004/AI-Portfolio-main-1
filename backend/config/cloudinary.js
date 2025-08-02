@@ -34,6 +34,34 @@ const profileImageStorage = new CloudinaryStorage({
   },
 });
 
+// Configure storage for project images
+const projectImageStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'portfolio/projects',
+    allowed_formats: ['jpg', 'png', 'jpeg', 'webp'],
+    transformation: [
+      { width: 800, height: 600, crop: 'fit' },
+      { quality: 'auto', fetch_format: 'auto' }
+    ],
+    public_id: (req, file) => `project-${Date.now()}`,
+  },
+});
+
+// Configure storage for tech stack logos
+const techLogoStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'portfolio/tech-logos',
+    allowed_formats: ['jpg', 'png', 'jpeg', 'webp'],
+    transformation: [
+      { width: 100, height: 100, crop: 'fit' },
+      { quality: 'auto', fetch_format: 'auto' }
+    ],
+    public_id: (req, file) => `tech-logo-${Date.now()}`,
+  },
+});
+
 // Create multer upload instances
 const uploadResume = multer({
   storage: resumeStorage,
@@ -59,6 +87,30 @@ const uploadProfileImage = multer({
   }
 });
 
+const uploadProjectImage = multer({
+  storage: projectImageStorage,
+  limits: { fileSize: 3 * 1024 * 1024 }, // 3MB limit
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed for project images'), false);
+    }
+  }
+});
+
+const uploadTechLogo = multer({
+  storage: techLogoStorage,
+  limits: { fileSize: 1 * 1024 * 1024 }, // 1MB limit
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed for tech logos'), false);
+    }
+  }
+});
+
 // Helper function to delete file from Cloudinary
 const deleteFromCloudinary = async (publicId, resourceType = 'image') => {
   try {
@@ -76,5 +128,7 @@ module.exports = {
   cloudinary,
   uploadResume,
   uploadProfileImage,
+  uploadProjectImage,
+  uploadTechLogo,
   deleteFromCloudinary
 };

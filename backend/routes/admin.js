@@ -4,7 +4,7 @@ const Project = require('../models/Project');
 const TechStack = require('../models/TechStack');
 const Contact = require('../models/Contact');
 const auth = require('../middleware/auth');
-const { uploadResume, uploadProfileImage, deleteFromCloudinary } = require('../config/cloudinary');
+const { uploadResume, uploadProfileImage, uploadProjectImage, uploadTechLogo, deleteFromCloudinary } = require('../config/cloudinary');
 const { 
   projectValidation, 
   personalValidation, 
@@ -43,11 +43,9 @@ router.post('/projects', projectValidation, handleValidationErrors, async (req, 
   try {
     const projectData = req.body;
     
-    // If featured is true, optionally unfeatured other projects (optional business logic)
     if (projectData.featured) {
       const featuredCount = await Project.countDocuments({ featured: true });
       if (featuredCount >= 3) {
-        // Optionally limit featured projects to 3
         await Project.updateOne(
           { featured: true },
           { featured: false },
@@ -120,6 +118,14 @@ router.delete('/projects/:id', async (req, res) => {
       });
     }
 
+    if (project.imagePublicId) {
+      try {
+        await deleteFromCloudinary(project.imagePublicId, 'image');
+      } catch (deleteError) {
+        console.error('Error deleting project image:', deleteError);
+      }
+    }
+
     res.json({
       success: true,
       message: 'Project deleted successfully'
@@ -133,6 +139,33 @@ router.delete('/projects/:id', async (req, res) => {
   }
 });
 
+// POST /api/admin/upload/project-image - Upload project image
+router.post('/upload/project-image', uploadProjectImage.single('projectImage'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: 'No project image provided'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Project image uploaded successfully',
+      data: {
+        url: req.file.path,
+        publicId: req.file.public_id
+      }
+    });
+  } catch (error) {
+    console.error('Project image upload error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to upload project image'
+    });
+  }
+});
+
 // ============= PERSONAL INFO MANAGEMENT =============
 
 // GET /api/admin/personal - Get personal info for editing
@@ -141,7 +174,6 @@ router.get('/personal', async (req, res) => {
     let personal = await Personal.findOne();
     
     if (!personal) {
-      // Create default personal data if none exists
       personal = new Personal({
         name: 'Naveen Agarwal',
         title: 'Front-End Web Developer',
@@ -214,10 +246,8 @@ router.post('/upload/resume', uploadResume.single('resume'), async (req, res) =>
       });
     }
 
-    // Update personal info with new resume URL
     let personal = await Personal.findOne();
     
-    // Delete old resume from Cloudinary if exists
     if (personal && personal.resumePublicId) {
       try {
         await deleteFromCloudinary(personal.resumePublicId, 'raw');
@@ -268,9 +298,16 @@ router.post('/upload/profile-image', uploadProfileImage.single('profileImage'), 
       });
     }
 
-    // Update personal info with new profile image URL
     let personal = await Personal.findOne();
     
+    if (personal && personal.profileImagePublicId) {
+      try {
+        await deleteFromCloudinary(personal.profileImagePublicId, 'image');
+      } catch (deleteError) {
+        console.error('Error deleting old profile image:', deleteError);
+      }
+    }
+
     if (!personal) {
       personal = new Personal({
         name: 'Naveen Agarwal',
@@ -282,6 +319,7 @@ router.post('/upload/profile-image', uploadProfileImage.single('profileImage'), 
     }
 
     personal.profileImageUrl = req.file.path;
+    personal.profileImagePublicId = req.file.public_id;
     await personal.save();
 
     res.json({
@@ -297,6 +335,33 @@ router.post('/upload/profile-image', uploadProfileImage.single('profileImage'), 
     res.status(500).json({
       success: false,
       message: 'Failed to upload profile image'
+    });
+  }
+});
+
+// POST /api/admin/upload/tech-logo - Upload tech stack logo
+router.post('/upload/tech-logo', uploadTechLogo.single('techLogo'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: 'No tech logo provided'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Tech logo uploaded successfully',
+      data: {
+        url: req.file.path,
+        publicId: req.file.public_id
+      }
+    });
+  } catch (error) {
+    console.error('Tech logo upload error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to upload tech logo'
     });
   }
 });
@@ -389,6 +454,14 @@ router.delete('/tech-stack/:id', async (req, res) => {
       });
     }
 
+    if (techItem.logoPublicId) {
+      try {
+        await deleteFromCloudinary(techItem.logoPublicId, 'image');
+      } catch (deleteError) {
+        console.error('Error deleting tech logo:', deleteError);
+      }
+    }
+
     res.json({
       success: true,
       message: 'Tech stack item deleted successfully'
@@ -398,6 +471,81 @@ router.delete('/tech-stack/:id', async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Failed to delete tech stack item'
+    });
+  }
+});
+
+// ============= CONTACT MESSAGE MANAGEMENT =============
+
+// GET /api/admin/contact/messages - Get all contact messages
+router.get('/contact/messages', async (req, res) => {
+  try {
+    const { status, page = 1, limit = 10 } = req.query;
+    let query = {};
+    if (status && status !== 'all') query.status = status;
+
+    const contacts = await Contact.find(query)
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(parseInt(limit));
+
+    const total = await Contact.countDocuments(query);
+
+    res.json({
+      success: true,
+      data: {
+        contacts,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / limit)
+        }
+      }
+    });
+
+  } catch (error) {
+    console.error('Error fetching contact messages:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch contact messages'
+    });
+  }
+});
+
+// PUT /api/admin/contact/messages/:id/status - Update contact message status
+router.put('/contact/messages/:id/status', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (!['new', 'read', 'replied'].includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid status. Must be one of: new, read, replied'
+      });
+    }
+
+    const contact = await Contact.findByIdAndUpdate(id, { status }, { new: true });
+
+    if (!contact) {
+      return res.status(404).json({
+        success: false,
+        message: 'Contact message not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Contact status updated successfully',
+      data: contact
+    });
+
+  } catch (error) {
+    console.error('Error updating contact status:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update contact status'
     });
   }
 });

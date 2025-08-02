@@ -26,9 +26,18 @@ const Contact = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    
+    // Log form data for debugging
+    console.log('🚀 Submitting contact form with data:', formData);
+    console.log('📋 Form data validation:');
+    console.log('- Name length:', formData.name.length);
+    console.log('- Email format test:', /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email));
+    console.log('- Message length:', formData.message.length);
 
     try {
       const response = await contactAPI.submitContact(formData);
+      
+      console.log('✅ Response received:', response.data);
       
       if (response.data.success) {
         toast({
@@ -40,7 +49,23 @@ const Contact = () => {
         throw new Error(response.data.message || 'Failed to send message');
       }
     } catch (error) {
-      console.error('Contact form error:', error);
+      console.error('❌ Contact form error:', error);
+      
+      // Enhanced error logging
+      if (error.response) {
+        console.log('📄 Error response status:', error.response.status);
+        console.log('📄 Error response data:', error.response.data);
+        
+        if (error.response.data.errors) {
+          console.log('🔍 Validation errors details:');
+          error.response.data.errors.forEach((err, index) => {
+            console.log(`  ${index + 1}. Field: ${err.path || err.param || 'unknown'}`);
+            console.log(`     Value: ${err.value || 'unknown'}`);
+            console.log(`     Message: ${err.msg || err.message}`);
+          });
+        }
+      }
+      
       toast({
         title: "Error",
         description: error.response?.data?.message || "Failed to send message. Please try again.",
@@ -142,6 +167,9 @@ const Contact = () => {
                     placeholder="Enter your full name"
                     disabled={isSubmitting}
                   />
+                  <div className="text-xs text-gray-500 mt-1">
+                    Length: {formData.name.length} characters
+                  </div>
                 </div>
 
                 <div>
@@ -159,6 +187,9 @@ const Contact = () => {
                     placeholder="Enter your email address"
                     disabled={isSubmitting}
                   />
+                  <div className="text-xs text-gray-500 mt-1">
+                    Valid: {/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email) ? 'Yes' : 'No'}
+                  </div>
                 </div>
 
                 <div>
@@ -176,6 +207,9 @@ const Contact = () => {
                     placeholder="Tell me about your project or just say hello..."
                     disabled={isSubmitting}
                   />
+                  <div className="text-xs text-gray-500 mt-1">
+                    Length: {formData.message.length} characters
+                  </div>
                 </div>
 
                 <Button
@@ -261,6 +295,15 @@ const Contact = () => {
                 I typically respond to messages within 24 hours. For urgent inquiries, 
                 feel free to reach out via phone or LinkedIn for faster communication.
               </p>
+            </div>
+            
+            {/* Debug Info */}
+            <div className="bg-gray-800/30 border border-gray-600 rounded-lg p-4">
+              <h4 className="text-gray-300 font-medium mb-2">Debug Info</h4>
+              <div className="text-xs text-gray-400 space-y-1">
+                <div>Backend URL: {process.env.REACT_APP_BACKEND_URL || 'Not set'}</div>
+                <div>Environment: {process.env.NODE_ENV}</div>
+              </div>
             </div>
           </div>
         </div>

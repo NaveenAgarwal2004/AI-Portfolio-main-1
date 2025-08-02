@@ -14,6 +14,9 @@ import AdminDashboard from './components/admin/AdminDashboard';
 import AdminProjects from './components/admin/AdminProjects';
 import AdminProjectNew from './components/admin/AdminProjectNew';
 import AdminProjectEdit from './components/admin/AdminProjectEdit';
+import AdminPersonal from './components/admin/AdminPersonal';
+import AdminTechStack from './components/admin/AdminTechStack';
+import AdminMessages from './components/admin/AdminMessages';
 import ProtectedRoute from './components/admin/ProtectedRoute';
 import { AuthProvider } from './contexts/AuthContext';
 import { Toaster } from './components/ui/toaster';
@@ -82,7 +85,6 @@ const Home = () => {
     }, 500);
 
     return () => clearTimeout(debounceTimeout);
-    fetchPortfolioData();
   }, []);
 
   if (isLoading) {
@@ -146,13 +148,20 @@ function App() {
             >
               <Route index element={<AdminDashboard />} />
               <Route path="dashboard" element={<AdminDashboard />} />
-              {/* Placeholder routes - will be implemented next */}
+              
+              {/* Projects Management */}
               <Route path="projects" element={<AdminProjects />} />
               <Route path="projects/new" element={<AdminProjectNew />} />
               <Route path="projects/edit/:id" element={<AdminProjectEdit />} />
-              <Route path="personal" element={<div className="p-6 text-white">Personal Info - Coming Soon</div>} />
-              <Route path="tech-stack" element={<div className="p-6 text-white">Tech Stack - Coming Soon</div>} />
-              <Route path="messages" element={<div className="p-6 text-white">Messages - Coming Soon</div>} />
+              
+              {/* Personal Info Management */}
+              <Route path="personal" element={<AdminPersonal />} />
+              
+              {/* Tech Stack Management */}
+              <Route path="tech-stack" element={<AdminTechStack />} />
+              
+              {/* Messages Management */}
+              <Route path="messages" element={<AdminMessages />} />
             </Route>
           </Routes>
         </BrowserRouter>
